@@ -12,7 +12,11 @@ app.set('view engine', 'ejs')
 app.set('views', 'views')
 
 
-
+app.get('/', (req, res) => {
+    res.render('index', {
+        title: 'Welcome to ZDG Chat',
+    })
+});
 
 
 
