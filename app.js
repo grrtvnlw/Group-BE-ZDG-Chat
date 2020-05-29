@@ -17,11 +17,21 @@ app.get('/', (req, res) => {
     })
 })
 
+<<<<<<< HEAD
 app.get('/', (req, res) => {
     res.render('livingroom', {
         title: 'Welcome to ZDG Chat',
     })
 });
+=======
+app.get('/mainroom', (req, res) => {
+    res.render('mainchat', {
+        title: 'ZDG Chat Main Room',
+    })
+})
+
+
+>>>>>>> 234c21dd1ace7e42c0ad71fe3eaf7260d5843d1a
 
 
 
