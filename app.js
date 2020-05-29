@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-    res.render('index', {
+    res.render('livingroom', {
         title: 'Welcome to ZDG Chat',
     })
 });
