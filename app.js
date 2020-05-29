@@ -17,6 +17,12 @@ app.get('/', (req, res) => {
     })
 })
 
+app.get('/mainroom', (req, res) => {
+    res.render('mainchat', {
+        title: 'ZDG Chat Main Room',
+    })
+})
+
 
 
 
