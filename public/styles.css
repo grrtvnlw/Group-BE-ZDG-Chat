@@ -3,3 +3,46 @@ h1 {
   font-size: 50px;
   color: blue;
 }
+
+.center {
+  margin: 0 auto;
+}
+
+.bg-color {
+  background-color: lightgrey;
+}
+
+section {
+  height: 90vh;
+  width: 100%;
+}
+
+#onlineUsers {
+  width: 25%;
+  height: 100%;
+}
+
+#mainChat {
+  width: 75%;
+  height: 100%;
+}
+
+#chatHeader {
+  height: 5%;
+}
+
+#chatBody {
+  height: 90%;
+}
+
+#chatInput {
+  height: 5%;
+}
+
+#onlineHeader {
+  height: 5%;
+}
+
+#users {
+  height: 95%;
+}
