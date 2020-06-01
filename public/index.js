@@ -5,7 +5,7 @@ let timeout=undefined
 
 $(document).ready(() => {
   // const socket = io();
-  console.log(name)
+  let name = $('.username').text()
   socket.emit('join', name);
   $('.chat-form').submit(e => {
     e.preventDefault();
@@ -14,31 +14,31 @@ $(document).ready(() => {
     $('.chat-input').val('');
   });
 
-  // $(".chat-input").keypress((e) => {
-  //   if (e.which != 13) {
-  //     typing = true
-  //     socket.emit('typing', {user:user, typing:true})
-  //     clearTimeout(timeout)
-  //     timeout = setTimeout(typingTimeout, 1500)
-  //   } else {
-  //     clearTimeout(timeout)
-  //     typingTimeout()
-  //   }
-  // });
+  $(".chat-input").keypress((e) => {
+    if (e.which != 13) {
+      typing = true
+      socket.emit('typing', {user:user, typing:true})
+      clearTimeout(timeout)
+      timeout = setTimeout(typingTimeout, 1500)
+    } else {
+      clearTimeout(timeout)
+      typingTimeout()
+    }
+  });
 
-  // socket.on('display', (data)=>{
-  //   if (data.typing == true) {
-  //     $('.typing').text(`${data.user} is typing...`)
-  //   }
-  //   else {
-  //     $('.typing').text("")
-  //   }
-  //   });
+  socket.on('display', (data)=>{
+    if (data.typing == true) {
+      $('.typing').text(`${data.user} is typing...`)
+    }
+    else {
+      $('.typing').text("")
+    }
+    });
 
-  // function typingTimeout(){
-  //   typing = false
-  //   socket.emit('typing', {user:user, typing:false})
-  // }
+  function typingTimeout(){
+    typing = false
+    socket.emit('typing', {user:user, typing:false})
+  }
 
   socket.on('chat message', (message) => {
     const $newChat = $(`<li class="list-group-item">${message}</li>`);
