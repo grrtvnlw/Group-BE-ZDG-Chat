@@ -50,6 +50,8 @@ app.get('/', (req, res) => {
     })
 })
 
+
+
 // app.get('/mainroom', checkAuthentication, (req, res) => {
 //     console.log(User)
 //     res.render('mainchat', {
@@ -71,32 +73,50 @@ app.get('/mainroom', (req, res) => {
     })
 });
 
-app.get('/jungleroom', function (req, res, next) {
-    db.Message.findAll({
-        where: {
-            RoomId: 3
-        }})
-        .then((results) => {
-            res.render('junglechat', {
-                title: 'Jungle Room',
-                messages: results
-            })
-        })
-})
 
-app.get('/oceanroom', function (req, res, next) {
+app.get('/codingroom', function (req, res, next) {
     db.Message.findAll({
         where: {
-            RoomId: 2
+            RoomId: 1
         }})
         .then((results) => {
-            res.render('oceanchat', {
-                title: 'Ocean Room',
+            res.render('codingchat', {
+                title: 'Coding Room',
                 messages: results
             })
         })
     
 })
+
+
+app.get('/atlantaroom', function (req, res, next) {
+    db.Message.findAll({
+        where: {
+            RoomId: 3
+        }})
+        .then((results) => {
+            res.render('atlantachat', {
+                title: 'Atlanta Room',
+                messages: results
+            })
+        })
+})
+
+app.get('/petroom', function (req, res, next) {
+    db.Message.findAll({
+        where: {
+            RoomId: 2
+        }})
+        .then((results) => {
+            res.render('petchat', {
+                title: 'Pet Room',
+                messages: results
+            })
+        })
+    
+})
+
+
 
 app.post('/signup', (req, res) => {
     const { username, email, password } = req.body
