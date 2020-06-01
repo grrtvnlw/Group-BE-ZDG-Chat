@@ -7,12 +7,12 @@ const bodyParser = require('body-parser');
 const db = require('./models');
 const bcrypt = require('bcrypt');
 const PORT = process.env.PORT || 3000;
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 var app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io').listen(http);
-let people = [];
-let peopleDict = {};
+let people = {};
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,15 +34,24 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({
-  secret: 'secret',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    // secure: true,
-    maxAge: 31536000000,
-  }
-}));
+const store = new SequelizeStore({ db: db.sequelize });
+const socketMiddleware = session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      // secure: true,
+        maxAge: 31536000000,
+    }
+});
+
+io.use((socket, next) => {
+    socketMiddleware(socket.request, socket.request.res || {}, next);
+});
+
+app.use(socketMiddleware);
+
+store.sync();
 
 app.get('/', (req, res) => {
     res.render('index', {
@@ -83,45 +92,63 @@ app.get('/mainroom', (req, res) => {
 });
 
 app.get('/codingroom', function (req, res, next) {
+    const username = req.session.user.username
+    db.User.findOne( {where: { username: username } })
     db.Message.findAll({
         where: {
             RoomId: 1
-        }})
+        }, 
+        include: [
+            db.User
+        ]})
         .then((results) => {
             res.render('codingchat', {
                 title: 'Coding Room',
-                messages: results
+                messages: results,
+                name: username
             })
         })
     
 })
 
 app.get('/atlantaroom', function (req, res, next) {
+    const username = req.session.user.username
+    db.User.findOne( {where: { username: username } })
     db.Message.findAll({
         where: {
             RoomId: 3
-        }})
-        .then((results) => {
-            res.render('atlantachat', {
-                title: 'Atlanta Room',
-                messages: results
-            })
+        }, 
+        include: [
+            db.User
+        ]})
+    .then((results) => {
+        res.render('atlantachat', {
+            title: 'Atlanta Room',
+            messages: results,
+            name: username
         })
-})
+    })
+});
 
 app.get('/petroom', function (req, res, next) {
+    const username = req.session.user.username
+    db.User.findOne( {where: { username: username } })
     db.Message.findAll({
         where: {
             RoomId: 2
-        }})
-        .then((results) => {
-            res.render('petchat', {
-                title: 'Pet Room',
-                messages: results
-            })
+        }, 
+        include: [
+            db.User
+        ]
+    })
+    .then((results) => {
+        res.render('petchat', {
+            title: 'Pet Room',
+            messages: results,
+            name: username
         })
-    
-})
+    })
+});
 
 app.post('/signup', (req, res) => {
     const { username, email, password } = req.body
@@ -142,7 +169,11 @@ app.post('/signin', (req, res) => {
         .then(User => {
             bcrypt.compare(password, User.password, (err, match) => {
                 if (match) {
-                    req.session.user = User;
+                    req.session.user = {
+                        userID: User.id,
+                        username: User.username,
+                        email: User.email
+                    };
                     res.redirect('/mainroom');
                 }
                 else {
@@ -153,67 +184,77 @@ app.post('/signin', (req, res) => {
         .catch(() => {
             res.send('Username not found');
         })
-})
+});
 
-// function connection(req, res, next) {
-//     if (req.session.user) {
-        io.on('connection', (socket) => {
-            // console.log(socket)
-            console.log('yooooo!')
-            socket.on('join', (name) => {
-                console.log(name)
-                db.User.findOne( {where: { username: name } })
-                .then((User) => {
-                    console.log(User.email)
-                    name = User.username
-                    return name
-                })
-                .then((name) => {
-                    console.log(`testing name ${name}`)
-                    people.push(name);
-                    console.log(people)
-                    // peopleDict[socket.id] = name;
-                    // console.log(peopleDict)
-                    socket.emit('chat message', `You have joined the chat. Hi ${name}!`);
-                    socket.broadcast.emit('chat message', `${name} has joined the chat.`)
-                    io.emit('emitParticipants', people);
-                    return name
-                })
-                .then((name) => {
-                    socket.on('chat message', (data) => {
-                        // console.log("helllo i exist")
-                        // socket.emit('chat message', `${name} says: ${data}`);
-                        io.emit('chat message', `${name} says: ${data}`);
-                    });
-                    socket.on('typing', (data) => {
-                        if (data.typing == true) {
-                        data.user = name;
-                        io.emit('display', data)
-                        } else {
-                        io.emit('display', data);
-                        }
-                    })
-                })
-            });
-        
-            // socket.on('disconnect', () => {
-            //     let offline = peopleDict[socket.id];
-            //     if (peopleDict[socket.id] != undefined) {
-            //     socket.broadcast.emit('chat message', `${peopleDict[socket.id]} has left the chat.`);
-            //     let updatedPeople = people.filter(item => {
-            //         return item != offline;
-            //     });
-            //     people = updatedPeople
-            //     io.emit('emitParticipants', people);
-            //     }
-            // });
+io.on('connection', (socket) => {
+    let name = "";
+    let id = "";
+    if (socket.request.session.user) {
+        name = socket.request.session.user.username
+        id = socket.request.session.user.userID
+        socket.on('join', () => {  
+            people[id] = name;
+            socket.emit('chat message', `You have joined the chat. Hi ${people[id]}!`);
+            socket.broadcast.emit('chat message', `${people[id]} has joined the room.`)
+            io.emit('emitParticipants', Object.values(people));
         });
-//         next()
-//     } else {
-//         res.redirect('/')
-//     }
+
+        socket.on('chat message', (data) => {
+            io.emit('chat message', `${name} says: ${data}`);
+        });
+
+        socket.on('pet message', (data) => {
+            db.Message.create({
+                content: data,
+                RoomId: 2, 
+                UserId: id,
+            }).then((result) => {
+                io.emit('pet message', `${name} says: ${data}`);
+            });
+        });
+
+        socket.on('Atlanta message', (data) => {
+            db.Message.create({
+                content: data,
+                RoomId: 3, 
+                UserId: id,
+            }).then((result) => {
+                io.emit('Atlanta message', `${name} says: ${data}`);
+            });
+        });
+
+        socket.on('coding message', (data) => {
+            db.Message.create({
+                content: data,
+                RoomId: 1, 
+                UserId: id,
+            }).then((result) => {
+                io.emit('coding message', `${name} says: ${data}`);
+            });
+        });
     
-// }
+        socket.on('typing', (data) => {
+            if (data.typing == true) {
+            data.user = name;
+            io.emit('display', data)
+            } else {
+            io.emit('display', data);
+            }
+        })
+
+        socket.on('disconnect', () => {
+            let offline = name;
+            if (name != undefined) {
+            socket.broadcast.emit('chat message', `${name} has left the chat.`);
+            let updatedPeople = people.filter(item => {
+                return item != offline;
+            });
+            people = updatedPeople
+            io.emit('emitParticipants', people);
+            }
+        });
+    };
+});
 
 http.listen(PORT, () => {
     console.log(`Listening. Open http://localhost:${PORT} to view.`);

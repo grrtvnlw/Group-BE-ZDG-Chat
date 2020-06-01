@@ -4,8 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.STRING
   }, {});
   Message.associate = function(models) {
-    // associations can be defined here
-    Message.belongsTo(models.User, { foreignKey: 'id' })
+    Message.belongsTo(models.User);
+    Message.belongsTo(models.Room);
   };
   return Message;
 };

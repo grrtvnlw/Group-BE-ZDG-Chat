@@ -22,17 +22,17 @@
   <section class="d-flex flex-direction-column  border border-primary">
     <div id="mainChat" class="">
       <div id="chatHeader" class="bg-color d-flex justify-content-start">
-        <h2 class="ml-2">Welcome to the Coding Room</h2>
+        <h2 class="ml-2">Welcome to the Coding Room <span class="username"><%= name %></span></h2>
       </div>
       <div id="chatBody" class="overflow-auto">
-        <ul id="messages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
+        <ul id="#codingMessages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
           <% for(var i=0; i < messages.length; i++) { %>
-              <li class="list-group-item"><%= messages[i].content %></li>
+              <li class="list-group-item"><%= messages[i].User.username %>: <%= messages[i].content %></li>
           <% } %>
         </ul>
       </div>
       <div id="chatInput">
-        <form class="chat-form d-flex">
+        <form class="chat-form d-flex" data-room="codingroom">
           <input class="form-control chat-input w-100" id="chat-message" />
           <button type="submit" class="btn btn-primary">
             Send
@@ -45,7 +45,7 @@
         <h2>Online</h2>
       </div>
       <div id="users">
-        <ul id="messages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
+        <ul id="online" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
           <!-- Chat messages go here -->
         </ul>
       </div>

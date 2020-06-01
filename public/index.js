@@ -4,13 +4,25 @@ let typing=false
 let timeout=undefined
 
 $(document).ready(() => {
-  // const socket = io();
-  let name = $('.username').text()
-  socket.emit('join', name);
-  $('.chat-form').submit(e => {
+  const socket = io();
+  socket.emit('join');
+  $('.chat-form').submit(function(e) {
     e.preventDefault();
     const value = $('.chat-input').val();
-    socket.emit('chat message', value);
+    switch ($(this).data('room')) {
+      case 'petroom':
+        socket.emit('pet message', value);
+        break;
+      case 'atlantaroom':
+        socket.emit('Atlanta message', value);
+        break;
+      case 'codingroom':
+        socket.emit('coding message', value);
+        break;
+      default:
+        socket.emit('chat message', value);
+        break;
+    }
     $('.chat-input').val('');
   });
 
@@ -43,6 +55,21 @@ $(document).ready(() => {
   socket.on('chat message', (message) => {
     const $newChat = $(`<li class="list-group-item">${message}</li>`);
     $('#messages').append($newChat);
+  });
+
+  socket.on('pet message', (message) => {
+    const $newChat = $(`<li class="list-group-item">${message}</li>`);
+    $('#petMessages').append($newChat);
+  });
+
+  socket.on('Atlanta message', (message) => {
+    const $newChat = $(`<li class="list-group-item">${message}</li>`);
+    $('#atlantaMessages').append($newChat);
+  });
+
+  socket.on('coding message', (message) => {
+    const $newChat = $(`<li class="list-group-item">${message}</li>`);
+    $('#codingMessages').append($newChat);
   });
 
   socket.on('emitParticipants', (people) => {
