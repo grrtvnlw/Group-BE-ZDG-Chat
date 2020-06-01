@@ -13,20 +13,21 @@
       </div>
     </div>
     <div>
-      <h1>Atlanta</h1>
+      <h1> A Place to Talk About Atlanta</h1>
     </div>
     <div>
       <button type="submit" class="btn btn-secondary">Logout</button>
     </div>
   </header>
-  <section class="d-flex flex-direction-column border-danger">
-    <div id="mainChat" class="border border-danger">
+  <section class="d-flex flex-direction-column border border-primary">
+    <div id="mainChat" class="">
       <div id="chatHeader" class="bg-color d-flex justify-content-start">
+        <h2 class="ml-2">Welcome to the ATL Room</h2>
       </div>
       <div id="chatBody">
         <ul id="messages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
           <% for(var i=0; i < messages.length; i++) { %>
-              <li><%= messages[i].content %></li>
+              <li class="list-group-item"><%= messages[i].content %></li>
           <% } %>
         </ul>
       </div>
@@ -39,7 +40,7 @@
         </form>
       </div>
     </div>
-    <div id="onlineUsers" class="border border-primary">
+    <div id="onlineUsers" class="border-left border-secondary">
       <div id="onlineHeader" class="bg-color d-flex justify-content-center">
         <h2>Online</h2>
       </div>
