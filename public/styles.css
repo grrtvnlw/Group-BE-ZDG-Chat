@@ -1,7 +1,11 @@
 h1 {
-  font-family: Garamond;
+  font-family: Arial;
   font-size: 50px;
-  color: blue;
+  color: royalblue;
+}
+
+h2 {
+  color: royalblue;
 }
 
 .center {
