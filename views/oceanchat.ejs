@@ -8,12 +8,12 @@
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="#">Space Room</a>
+        <a class="dropdown-item" href="/mainroom">Home</a>
         <a class="dropdown-item" href="/jungleroom">Jungle Room</a>
-        <a class="dropdown-item" href="/oceanroom">Ocean Room</a>
       </div>
     </div>
     <div>
-      <h1>ZDG Chat - Main Room</h1>
+      <h1>Ocean</h1>
     </div>
     <div>
       <button type="submit" class="btn btn-secondary">Logout</button>
@@ -22,11 +22,12 @@
   <section class="d-flex flex-direction-column border-danger">
     <div id="mainChat" class="border border-danger">
       <div id="chatHeader" class="bg-color d-flex justify-content-start">
-        <h2>Main Chat, Welcome <%= name %></h2>
       </div>
       <div id="chatBody">
         <ul id="messages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
-          <!-- Chat messages go here -->
+          <% for(var i=0; i < messages.length; i++) { %>
+              <li><%= messages[i].content %></li>
+          <% } %>
         </ul>
       </div>
       <div id="chatInput">
@@ -37,7 +38,6 @@
           </button>
         </form>
       </div>
-
     </div>
     <div id="onlineUsers" class="border border-primary">
       <div id="onlineHeader" class="bg-color d-flex justify-content-center">
@@ -48,35 +48,8 @@
           <!-- Chat messages go here -->
         </ul>
       </div>
-      
     </div>
-  
   </section>
-  
-    <!-- <button onclick="location.href = '/private'" class="btn btn-secondary ml-3 p-1">Private Chat</button>
-  </div>
-  <div class="d-flex h-100">
-    <div class="m-3">
-      <p class="ml-3">Chat</p>
-    </div>
-    <ul id="messages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
-      Chat messages go here
-    </ul>
-    <div class="m-3">
-      <p class="ml-3">Online</p>
-    </div>
-    <ul id="online" class="list-group w-20 flex-grow-1 overflow-auto" style="list-style-type: none;">
-      Online users go here
-    </ul>
-  </div>
-  <div class="card-footer">
-    <div class="typing mb-3"></div>
-    <form class="chat-form d-flex">
-      <input class="form-control chat-input w-100" id="chat-message" />
-      <button type="submit" class="btn btn-primary">
-        Send
-      </button>
-    </form> -->
   </div>
 </div>
 
