@@ -76,26 +76,28 @@ $(document).ready(() => {
     e.preventDefault();
     const message = $('.privatechat-input').val();
     console.log(message)
-    console.log(name)
-    socket.on('private message', (name, message) => {
-      alert(message)
+    socket.on('private message', (users) => {
+      console.log(name)
+      console.log(users[name])
+      users[name].emit(alert(message))
     })
-    $('.chat-input').val('');
+    $('.privatechat-input').val('');
   });
 
   let name = "";
   $(document).on('click', '.name', function() {
-      name = $('.name').attr('data-name');
-});
+      name = $(this).attr('data-name');
+      console.log(name)
+    });
   
   socket.on('emitParticipants', (people) => {
     $('#online').html('');
     if (Object.keys(people).length == 1) {
-      let personName = Object.values(people);
-      const $newName = $(`<li class="list-group-item">🌐 ${personName} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-name="${personName}">Chat</button></li>`);
+      // let personName = Object.values(people);
+      const $newName = $(`<li class="list-group-item">🌐 ${Object.values(people)} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-name="${Object.values(people)}">Chat</button></li>`);
       $('#online').append($newName);
     } else {
-      console.log(people)
+      // console.log(people)
       people.forEach((person) => {
         const $newName = $(`<li class="list-group-item">🌐 ${person} <button type="button" class="btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-name="${person}">Chat</button></li>`);
         $('#online').append($newName);
