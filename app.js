@@ -203,17 +203,30 @@ io.on('connection', (socket) => {
         id = socket.request.session.user.userID
         socket.on('join', () => {  
             people[id] = name;
-            users[name] = socket.id;
+            users[socket.id] = name;
             socket.emit('chat message', `You have joined the chat. Hi ${people[id]}!`);
             socket.broadcast.emit('chat message', `${people[id]} has joined the room.`)
             io.emit('emitParticipants', Object.values(people));
+            console.log(people)
+        });
+
+        socket.on('disconnect', () => {
+            let offline = users[socket.id];
+            if (users[socket.id] != undefined) {
+                socket.broadcast.emit('chat message', `${users[socket.id]} has left the chat.`);
+                let updatedPeople = Object.values(people).filter(item => {
+                    return item != offline;
+                });
+                people = updatedPeople
+                io.emit('emitParticipants', people);
+            }
         });
 
         socket.on('chat message', (data) => {
             io.emit('chat message', `${name} says: ${data}`);
         });
 
-        socket.on('private message', (data) => {
+        socket.on('private message', (name, data) => {
             users[name].emit('private message', `${name} says: ${data}`);
         })
 
@@ -255,15 +268,6 @@ io.on('connection', (socket) => {
             io.emit('display', data);
             }
         })
-
-        socket.on('disconnect', () => {
-            let name = people[id];
-            if (name != undefined) {
-                delete people[id];
-                socket.broadcast.emit('chat message', `${name} has left the room.`);
-                io.emit('emitParticipants', people);
-            }
-        });
     };
 });
 

@@ -72,16 +72,34 @@ $(document).ready(() => {
     $('#codingMessages').append($newChat);
   });
 
-  socket.on('private message', (data) => {
-    alert(data)
-  })
+  $(document).on('submit', '.private-form', function(e) {
+    e.preventDefault();
+    const message = $('.privatechat-input').val();
+    console.log(message)
+    console.log(name)
+    socket.on('private message', (name, message) => {
+      alert(message)
+    })
+    $('.chat-input').val('');
+  });
 
+  let name = "";
+  $(document).on('click', '.name', function() {
+      name = $('.name').attr('data-name');
+});
+  
   socket.on('emitParticipants', (people) => {
     $('#online').html('');
-    let values = Object.values(people)
-    values.forEach((person) => {
-      const $newName = $(`<li class="list-group-item">🌐 ${person} <a href="/private" class="btn btn-secondary p-0">chat</a></li>`);
+    if (Object.keys(people).length == 1) {
+      let personName = Object.values(people);
+      const $newName = $(`<li class="list-group-item">🌐 ${personName} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-name="${personName}">Chat</button></li>`);
       $('#online').append($newName);
-    });
+    } else {
+      console.log(people)
+      people.forEach((person) => {
+        const $newName = $(`<li class="list-group-item">🌐 ${person} <button type="button" class="btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-name="${person}">Chat</button></li>`);
+        $('#online').append($newName);
+      });
+    }
   });
 });
