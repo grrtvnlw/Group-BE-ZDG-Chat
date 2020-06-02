@@ -219,7 +219,7 @@ io.on('connection', (socket) => {
 
         socket.on('private message', (data) => {
             io.to(sockets[data.id]).emit('private message', {
-                name: people[data.id],
+                name: people[id],
                 message: data.message
             });
         });

@@ -5,6 +5,7 @@ let timeout=undefined
 $(document).ready(() => {
   const socket = io();
   const room = $('.chat-form').data('room') || 'main'
+  console.log(room)
   socket.emit('join', room);
   $('.chat-form').submit(function(e) {
     e.preventDefault();
@@ -92,7 +93,7 @@ $(document).ready(() => {
   socket.on('emitParticipants', (people) => {
     $('#online').html('');
       for (let [key, value] of Object.entries(people)) {
-        const $newName = $(`<li class="list-group-item">🌐 ${value} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-id="${key}">Chat</button></li>`);
+        const $newName = $(`<li class="list-group-item">🌐  ${value} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-id="${key}">Chat</button></li>`);
         $('#online').append($newName);
       };
   });
