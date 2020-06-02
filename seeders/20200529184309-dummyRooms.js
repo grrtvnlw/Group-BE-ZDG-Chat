@@ -3,15 +3,15 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
       return queryInterface.bulkInsert('Rooms', [{
-        rm_name: 'Ocean Room',
+        rm_name: 'Coding Room',
         createdAt: new Date(),
         updatedAt: new Date()
       }, {
-        rm_name: 'Space Room',
+        rm_name: 'Pets Room',
         createdAt: new Date(),
         updatedAt: new Date()
       }, {
-        rm_name: 'Welcome to the Jungle',
+        rm_name: 'Atlanta Room',
         createdAt: new Date(),
         updatedAt: new Date()
       }], {});
