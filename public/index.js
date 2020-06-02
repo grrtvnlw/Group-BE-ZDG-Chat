@@ -11,13 +11,13 @@ $(document).ready(() => {
     e.preventDefault();
     const value = $('.chat-input').val();
     switch ($(this).data('room')) {
-      case 'petroom':
+      case 'Pet Room':
         socket.emit('pet message', value);
         break;
-      case 'atlantaroom':
+      case 'Atlanta Room':
         socket.emit('Atlanta message', value);
         break;
-      case 'codingroom':
+      case 'Coding Room':
         socket.emit('coding message', value);
         break;
       default:
