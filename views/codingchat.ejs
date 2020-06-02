@@ -25,7 +25,7 @@
         <h2 class="ml-2">Welcome to the Coding Room <span class="username"><%= name %></span></h2>
       </div>
       <div id="chatBody" class="overflow-auto">
-        <ul id="#codingMessages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
+        <ul id="codingMessages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
           <% for(var i=0; i < messages.length; i++) { %>
               <li class="list-group-item"><%= messages[i].User.username %>: <%= messages[i].content %> at <%= messages[i].formattedDate %></li>
           <% } %>
