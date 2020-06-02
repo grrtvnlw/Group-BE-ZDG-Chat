@@ -5,7 +5,6 @@ let timeout=undefined
 $(document).ready(() => {
   const socket = io();
   const room = $('.chat-form').data('room') || 'Main Room'
-  console.log(room)
   socket.emit('join', room);
   $('.chat-form').submit(function(e) {
     e.preventDefault();

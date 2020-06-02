@@ -4,8 +4,13 @@ h1 {
   color: royalblue;
 }
 
-h2 {
+h2, .number {
   color: royalblue;
+}
+
+.dbusername {
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .center {
@@ -32,11 +37,11 @@ section {
 }
 
 #chatHeader {
-  height: 5%;
+  height: 7%;
 }
 
 #chatBody {
-  height: 85%;
+  height: 83%;
 }
 
 #chatInput {
@@ -52,9 +57,9 @@ section {
 }
 
 #onlineHeader {
-  height: 5%;
+  height: 7%;
 }
 
 #users {
-  height: 95%;
+  height: 93%;
 }
