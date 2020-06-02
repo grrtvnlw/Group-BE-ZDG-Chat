@@ -13,18 +13,18 @@ var app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io').listen(http);
 let people = {};
-let users = {};
+let sockets = {};
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// function checkAuthentication(req, res, next) {
-//     if (req.session.user) {
-//         next();
-//     } else {
-//         res.redirect('/users/login');
-//     }
-// }
+function checkAuthentication(req, res, next) {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+}
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -55,9 +55,13 @@ app.use(socketMiddleware);
 store.sync();
 
 app.get('/', (req, res) => {
-    res.render('index', {
-        title: 'Welcome to ZDG Chat',
-    })
+    if (req.session.user) {
+        res.redirect('/mainroom')
+    } else {
+        res.render('index', {
+            title: 'Welcome to ZDG Chat',
+        })
+    }
 })
 
 app.get('/logout', function (req, res, next) {
@@ -72,19 +76,10 @@ app.get('/logout', function (req, res, next) {
     }
 })
 
-// app.get('/mainroom', checkAuthentication, (req, res) => {
-//     console.log(User)
-//     res.render('mainchat', {
-//         title: 'ZDG Chat Main Room',
-//         name: User.username
-//     })
-// })
-
-app.get('/mainroom', (req, res) => {
+app.get('/mainroom', checkAuthentication, (req, res) => {
     const username = req.session.user.username
     db.User.findOne( {where: { username: username } })
     .then((User) => {
-        // let name = username
         res.render('mainchat', {
             title: 'ZDG Chat Main Room',
             name: username
@@ -201,35 +196,21 @@ io.on('connection', (socket) => {
     if (socket.request.session.user) {
         name = socket.request.session.user.username
         id = socket.request.session.user.userID
-        socket.on('join', () => {  
+        socket.on('join', (room) => {  
             people[id] = name;
-            users[socket.id] = name;
+            sockets[id] = socket.id;
             socket.emit('chat message', `You have joined the chat. Hi ${people[id]}!`);
             socket.broadcast.emit('chat message', `${people[id]} has joined the room.`)
-            // io.emit('emitParticipants', Object.values(people));
-            io.emit('emitParticipants', Object.values(users));
+            io.emit('emitParticipants', people);
             console.log(people)
-            console.log(users)
         });
 
-        // function updateOnlineUsers() {
-        //     io.emit('emitParticipants', Object.keys(users));
-        // }
-
-        // socket.on('disconnect', (data) => {
-        //     if (!users.id) return;
-        //     delete users.id;
-        //     console.log(users)
-        //     updateOnlineUsers();
-        // });
-
         socket.on('disconnect', () => {
-            let offline = users[socket.id];
-            if (users[socket.id] != undefined) {
-                socket.broadcast.emit('chat message', `${users[socket.id]} has left the chat.`);
-                delete users[socket.id]
-                console.log(users)
-                io.emit('emitParticipants', Object.values(users));
+            if (sockets[id] != undefined) {
+                io.emit('chat message', `${name} has left the room.`);
+                delete sockets[id];
+                delete people[id];
+                io.emit('emitParticipants', people);
             }
         });
 
@@ -237,12 +218,12 @@ io.on('connection', (socket) => {
             io.emit('chat message', `${name} says: ${data}`);
         });
 
-        // socket.on('private message', (name, data) => {
-        //     users[name].emit('private message', `${name} says: ${data}`);
-        // });
-
-        socket.on('private message', (users) => {
-            io.emit('private message', users);
+        socket.on('private message', (data) => {
+            // console.log(users[socket.id])
+            io.to(sockets[data.id]).emit('private message', {
+                name: people[data.id],
+                message: data.message
+            });
         });
 
         socket.on('pet message', (data) => {
