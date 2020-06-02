@@ -203,19 +203,47 @@ io.on('connection', (socket) => {
         id = socket.request.session.user.userID
         socket.on('join', () => {  
             people[id] = name;
-            users[name] = socket.id;
+            users[socket.id] = name;
             socket.emit('chat message', `You have joined the chat. Hi ${people[id]}!`);
             socket.broadcast.emit('chat message', `${people[id]} has joined the room.`)
-            io.emit('emitParticipants', Object.values(people));
+            // io.emit('emitParticipants', Object.values(people));
+            io.emit('emitParticipants', Object.values(users));
+            console.log(people)
+            console.log(users)
+        });
+
+        // function updateOnlineUsers() {
+        //     io.emit('emitParticipants', Object.keys(users));
+        // }
+
+        // socket.on('disconnect', (data) => {
+        //     if (!users.id) return;
+        //     delete users.id;
+        //     console.log(users)
+        //     updateOnlineUsers();
+        // });
+
+        socket.on('disconnect', () => {
+            let offline = users[socket.id];
+            if (users[socket.id] != undefined) {
+                socket.broadcast.emit('chat message', `${users[socket.id]} has left the chat.`);
+                delete users[socket.id]
+                console.log(users)
+                io.emit('emitParticipants', Object.values(users));
+            }
         });
 
         socket.on('chat message', (data) => {
             io.emit('chat message', `${name} says: ${data}`);
         });
 
-        socket.on('private message', (data) => {
-            users[name].emit('private message', `${name} says: ${data}`);
-        })
+        // socket.on('private message', (name, data) => {
+        //     users[name].emit('private message', `${name} says: ${data}`);
+        // });
+
+        socket.on('private message', (users) => {
+            io.emit('private message', users);
+        });
 
         socket.on('pet message', (data) => {
             db.Message.create({
@@ -255,15 +283,6 @@ io.on('connection', (socket) => {
             io.emit('display', data);
             }
         })
-
-        socket.on('disconnect', () => {
-            let name = people[id];
-            if (name != undefined) {
-                delete people[id];
-                socket.broadcast.emit('chat message', `${name} has left the room.`);
-                io.emit('emitParticipants', people);
-            }
-        });
     };
 });
 
