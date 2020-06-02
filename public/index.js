@@ -40,7 +40,7 @@ $(document).ready(() => {
 
   socket.on('display', (data)=>{
     if (data.typing == true) {
-      $('.typing').text(`${data.user} is typing...`)
+      $('.typing').text(`${data.user} is typing 💻`)
     }
     else {
       $('.typing').text("")

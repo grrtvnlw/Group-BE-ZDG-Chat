@@ -22,7 +22,7 @@ h2, .number {
 }
 
 section {
-  height: 90vh;
+  height: 85vh;
   width: 100%;
 }
 
@@ -49,7 +49,7 @@ section {
 }
 
 .typing {
-  height: 27%;
+  height: 30%;
 }
 
 .chat-form {
