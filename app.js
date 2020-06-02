@@ -202,7 +202,6 @@ io.on('connection', (socket) => {
             socket.emit('chat message', `You have joined the chat. Hi ${people[id]}!`);
             socket.broadcast.emit('chat message', `${people[id]} has joined the room.`)
             io.emit('emitParticipants', people);
-            console.log(people)
         });
 
         socket.on('disconnect', () => {
@@ -219,7 +218,6 @@ io.on('connection', (socket) => {
         });
 
         socket.on('private message', (data) => {
-            // console.log(users[socket.id])
             io.to(sockets[data.id]).emit('private message', {
                 name: people[data.id],
                 message: data.message
