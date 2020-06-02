@@ -14,6 +14,7 @@ const http = require('http').createServer(app);
 const io = require('socket.io').listen(http);
 let people = {};
 let sockets = {};
+let rooms = {};
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -197,16 +198,16 @@ io.on('connection', (socket) => {
         name = socket.request.session.user.username
         id = socket.request.session.user.userID
         socket.on('join', (room) => {  
-            people[id] = name;
+            people[id] = { name, room };
             sockets[id] = socket.id;
-            socket.emit('chat message', `You have joined the chat. Hi ${people[id]}!`);
-            socket.broadcast.emit('chat message', `${people[id]} has joined the room.`)
+            socket.emit('chat message', `You have joined the chat. Hi ${people[id].name}!`);
+            // socket.broadcast.emit('chat message', `${people[id].name} has joined the ${room}.`)
             io.emit('emitParticipants', people);
         });
 
         socket.on('disconnect', () => {
             if (sockets[id] != undefined) {
-                io.emit('chat message', `${name} has left the room.`);
+                // io.emit('chat message', `${name} has left the room.`);
                 delete sockets[id];
                 delete people[id];
                 io.emit('emitParticipants', people);
@@ -219,7 +220,7 @@ io.on('connection', (socket) => {
 
         socket.on('private message', (data) => {
             io.to(sockets[data.id]).emit('private message', {
-                name: people[id],
+                name: people[id].name,
                 message: data.message
             });
         });
