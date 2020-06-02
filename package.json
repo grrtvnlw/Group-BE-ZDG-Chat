@@ -15,13 +15,15 @@
     "morgan": "^1.10.0",
     "pg": "^8.2.1",
     "sequelize": "^5.21.11",
+    "sequelize-cli": "^5.5.1",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sequelize-init": "sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
-    "sequelize-reset": "sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all"
+    "sequelize-reset": "sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
