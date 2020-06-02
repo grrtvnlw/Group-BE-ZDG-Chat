@@ -93,7 +93,7 @@ $(document).ready(() => {
   socket.on('emitParticipants', (people) => {
     $('#online').html('');
       for (let [key, value] of Object.entries(people)) {
-        const $newName = $(`<li class="list-group-item">🌐 ${value.name} is in ${value.room} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-id="${key}">Chat</button></li>`);
+        const $newName = $(`<li class="list-group-item">🌐 ${value.name} is in the ${value.room} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-id="${key}">Chat</button></li>`);
         $('#online').append($newName);
       };
   });
