@@ -12,20 +12,12 @@ module.exports = (sequelize, DataTypes) => {
         const month = date.getMonth() + 1
         const year = date.getFullYear()
 
-        if (hours < 12) {
-          if (mins < 10) {
-            return `${hours}:0${mins}am on ${month}/${day}/${year}`
-          } else {
-            return `${hours}:${mins}am on ${month}/${day}/${year}`
-          }
+        if (mins < 10) {
+          return `${hours}:0${mins} UTC on ${month}/${day}/${year}`
         } else {
-          if (mins < 10) {
-            return `${hours - 12}:0${mins}pm on ${month}/${day}/${year}`
-          } else {
-            return `${hours - 12}:${mins}pm on ${month}/${day}/${year}`
-          }
+          return `${hours}:${mins} UTC on ${month}/${day}/${year}`
         }
-    }
+      }
     }
   }, {});
   Message.associate = function(models) {

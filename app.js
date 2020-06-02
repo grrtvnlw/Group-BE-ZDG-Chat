@@ -200,7 +200,7 @@ io.on('connection', (socket) => {
         socket.on('join', (room) => {  
             people[id] = { name, room };
             sockets[id] = socket.id;
-            socket.emit('chat message', `You have joined the chat. Hi ${people[id].name}!`);
+            socket.emit('chat message', `You have joined ZDG chat. Hi ${people[id].name}!`);
             // socket.broadcast.emit('chat message', `${people[id].name} has joined the ${room}.`)
             io.emit('emitParticipants', people);
         });
@@ -215,7 +215,7 @@ io.on('connection', (socket) => {
         });
 
         socket.on('chat message', (data) => {
-            io.emit('chat message', `${name} says: ${data}`);
+            io.emit('chat message', `${name} 🗣 ${data}`);
         });
 
         socket.on('private message', (data) => {
@@ -231,7 +231,7 @@ io.on('connection', (socket) => {
                 RoomId: 2, 
                 UserId: id,
             }).then((result) => {
-                io.emit('pet message', `${name} says: ${data}`);
+                io.emit('pet message', `<span class="dbusername">${name}</span>: ${data}`);
             });
         });
 
@@ -241,7 +241,7 @@ io.on('connection', (socket) => {
                 RoomId: 3, 
                 UserId: id,
             }).then((result) => {
-                io.emit('Atlanta message', `${name} says: ${data}`);
+                io.emit('Atlanta message', `<span class="dbusername">${name}</span>: ${data}`);
             });
         });
 
@@ -251,7 +251,7 @@ io.on('connection', (socket) => {
                 RoomId: 1, 
                 UserId: id,
             }).then((result) => {
-                io.emit('coding message', `${name} says: ${data}`);
+                io.emit('coding message', `<span class="dbusername">${name}</span>: ${data}`);
             });
         });
     
