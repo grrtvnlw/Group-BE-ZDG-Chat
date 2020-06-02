@@ -1,11 +1,11 @@
-let socket = io()
 let user
 let typing=false
 let timeout=undefined
 
 $(document).ready(() => {
   const socket = io();
-  socket.emit('join');
+  const room = $('.chat-form').data('room') || 'main'
+  socket.emit('join', room);
   $('.chat-form').submit(function(e) {
     e.preventDefault();
     const value = $('.chat-input').val();
@@ -72,36 +72,28 @@ $(document).ready(() => {
     $('#codingMessages').append($newChat);
   });
 
-  $(document).on('submit', '.private-form', function(e) {
-    e.preventDefault();
-    const message = $('.privatechat-input').val();
-    console.log(message)
-    socket.on('private message', (users) => {
-      console.log(name)
-      console.log(users[name])
-      users[name].emit(alert(message))
-    })
-    $('.privatechat-input').val('');
+  $(document).on('click', '.name', function(e) {
+      const id = $(this).data('id');
+      $('.private-form').data('id', id);
   });
 
-  let name = "";
-  $(document).on('click', '.name', function() {
-      name = $(this).attr('data-name');
-      console.log(name)
-    });
+  $('.private-form').on('submit', function(e) {
+    e.preventDefault();
+    const message = $('.privatechat-input').val();
+    const id = $(this).data('id');
+    $('.privatechat-input').val('');
+    socket.emit('private message', { id, message })
+  });
   
+  socket.on('private message', (data) => {
+    alert(`${data.name} says ${data.message}`)
+  })
+
   socket.on('emitParticipants', (people) => {
     $('#online').html('');
-    if (Object.keys(people).length == 1) {
-      // let personName = Object.values(people);
-      const $newName = $(`<li class="list-group-item">🌐 ${Object.values(people)} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-name="${Object.values(people)}">Chat</button></li>`);
-      $('#online').append($newName);
-    } else {
-      // console.log(people)
-      people.forEach((person) => {
-        const $newName = $(`<li class="list-group-item">🌐 ${person} <button type="button" class="btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-name="${person}">Chat</button></li>`);
+      for (let [key, value] of Object.entries(people)) {
+        const $newName = $(`<li class="list-group-item">🌐 ${value} <button type="button" class="name btn btn-secondary p-0" data-toggle="modal" data-target="#exampleModal" data-id="${key}">Chat</button></li>`);
         $('#online').append($newName);
-      });
-    }
+      };
   });
 });
