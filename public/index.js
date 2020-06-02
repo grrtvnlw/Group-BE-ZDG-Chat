@@ -72,11 +72,16 @@ $(document).ready(() => {
     $('#codingMessages').append($newChat);
   });
 
+  socket.on('private message', (data) => {
+    alert(data)
+  })
+
   socket.on('emitParticipants', (people) => {
     $('#online').html('');
-    people.forEach((person) => {
-      const $newName = $(`<li class="list-group-item">${person} is online 🌐</li>`);
+    let values = Object.values(people)
+    values.forEach((person) => {
+      const $newName = $(`<li class="list-group-item">🌐 ${person} <a href="/private" class="btn btn-secondary p-0">chat</a></li>`);
       $('#online').append($newName);
-    })
+    });
   });
 });

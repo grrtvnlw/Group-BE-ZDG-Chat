@@ -1,19 +1,19 @@
 <%- include('partials/head') %>
 
 <div class="container">
-  <header class="d-flex flex-direction-column align-items-center justify-content-between bg-color p-1 mb-3">
+  <header class="d-flex flex-direction-column align-items-center justify-content-between bg-color p-2 mb-3">
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Chat Rooms
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="/codingroom">Coding Room</a>
-        <a class="dropdown-item" href="/mainroom">Home</a>
-        <a class="dropdown-item" href="/atlantaroom">Atlanta Room</a>
+        <a class="dropdown-item" href="/atlantaroom">Atlanta Room</a></a>
+        <a class="dropdown-item" href="/codingroom">Coding Room
+        <a class="dropdown-item" href="/petroom">Pet Room</a>
       </div>
     </div>
     <div>
-      <h1>A Place to Talk About Pets</h1>
+      <h1>Private Chat</h1>
     </div>
     <div>
       <a href="/logout"><button type="submit" class="btn btn-secondary">Logout</button></a>
@@ -22,24 +22,23 @@
   <section class="d-flex flex-direction-column border border-secondary rounded">
     <div id="mainChat" class="">
       <div id="chatHeader" class="bg-color d-flex justify-content-start">
-        <h2 class="ml-2">Welcome to the Pets Room <span class="username"><%= name %></span></h2>
+        <h2 class="ml-2">Welcome to Private Chat <span class="username"><%= name %></span></h2>
       </div>
       <div id="chatBody" class="overflow-auto">
-        <ul id="petMessages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
-          <% for(var i=0; i < messages.length; i++) { %>
-              <li class="list-group-item"><%= messages[i].User.username %>: <%= messages[i].content %></li>
-          <% } %>
+        <ul id="messages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
+          <!-- Chat messages go here -->
         </ul>
       </div>
       <div id="chatInput">
         <div class="typing mb-3"></div>
-        <form class="chat-form d-flex" data-room="petroom" >
+        <form class="chat-form d-flex">
           <input class="form-control chat-input w-100" id="chat-message" />
           <button type="submit" class="btn btn-primary">
             Send
           </button>
         </form>
       </div>
+
     </div>
     <div id="onlineUsers" class="border-left border-primary">
       <div id="onlineHeader" class="bg-color d-flex justify-content-center">
@@ -47,9 +46,9 @@
       </div>
       <div id="users">
         <ul id="online" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
-          <!-- Online users go here -->
+          <!-- Chat messages go here -->
         </ul>
-      </div>
+      </div>  
     </div>
   </section>
   </div>

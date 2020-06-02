@@ -13,6 +13,7 @@ var app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io').listen(http);
 let people = {};
+let users = {};
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -150,6 +151,14 @@ app.get('/petroom', function (req, res, next) {
     })
 });
 
+app.get('/private', (req, res) => {
+    const username = req.session.user.username
+    res.render('private', {
+        title: 'Private Chat',
+        name: username
+    })
+})
+
 app.post('/signup', (req, res) => {
     const { username, email, password } = req.body
     bcrypt.hash(password, 10, (err, hash) => {
@@ -194,6 +203,7 @@ io.on('connection', (socket) => {
         id = socket.request.session.user.userID
         socket.on('join', () => {  
             people[id] = name;
+            users[name] = socket.id;
             socket.emit('chat message', `You have joined the chat. Hi ${people[id]}!`);
             socket.broadcast.emit('chat message', `${people[id]} has joined the room.`)
             io.emit('emitParticipants', Object.values(people));
@@ -202,6 +212,10 @@ io.on('connection', (socket) => {
         socket.on('chat message', (data) => {
             io.emit('chat message', `${name} says: ${data}`);
         });
+
+        socket.on('private message', (data) => {
+            users[name].emit('private message', `${name} says: ${data}`);
+        })
 
         socket.on('pet message', (data) => {
             db.Message.create({
@@ -243,14 +257,11 @@ io.on('connection', (socket) => {
         })
 
         socket.on('disconnect', () => {
-            let offline = name;
+            let name = people[id];
             if (name != undefined) {
-            socket.broadcast.emit('chat message', `${name} has left the chat.`);
-            let updatedPeople = people.filter(item => {
-                return item != offline;
-            });
-            people = updatedPeople
-            io.emit('emitParticipants', people);
+                delete people[id];
+                socket.broadcast.emit('chat message', `${name} has left the room.`);
+                io.emit('emitParticipants', people);
             }
         });
     };
