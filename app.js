@@ -149,11 +149,23 @@ app.get('/petroom', function (req, res, next) {
 
 app.get('/private', (req, res) => {
     const username = req.session.user.username
-    res.render('private', {
-        title: 'Private Chat',
-        name: username
+    db.User.findOne( {where: { username: username } })
+    db.Message.findAll({
+        where: {
+            RoomId: 4
+        }, 
+        include: [
+            db.User
+        ]
     })
-})
+    .then((results) => {
+        res.render('private', {
+            title: 'Private Chat',
+            messages: results,
+            name: username
+        })
+    })
+});
 
 app.post('/signup', (req, res) => {
     const { username, email, password } = req.body
@@ -227,15 +239,15 @@ io.on('connection', (socket) => {
         });
         
         socket.on('privateRoom message', (data) => {
-            console.log(sockets)
-            console.log(data.name)
-            console.log(name)
-            // io.to(sockets[name]).emit('privateRoom message', `${name} 🗣 ${data}`);
-            io.to(sockets[data.name]).emit('privateRoom message', `${name} 🗣 ${data}`);
-            // io.to(sockets[data.id]).emit('privateRoom message', {
-            //     name: people[id].name,
-            //     message: data.message
-            // });
+            console.log(id)
+            db.Message.create({
+                content: data.message,
+                RoomId: 4, 
+                UserId: data.id,
+                SenderID: id 
+            }).then((result) => {
+                io.to(sockets[data.id]).emit('privateRoom message', `${name} 🗣 ${data.message}`);
+            });
         });
 
         socket.on('room message', (data) => {
