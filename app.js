@@ -200,6 +200,7 @@ io.on('connection', (socket) => {
         socket.on('join', (room) => {  
             people[id] = { name, room };
             sockets[id] = socket.id;
+            sockets[name] = socket.id
             socket.emit('chat message', `You have joined ZDG chat. Hi ${people[id].name}!`);
             // socket.broadcast.emit('chat message', `${people[id].name} has joined the ${room}.`)
             io.emit('emitParticipants', people);
@@ -222,6 +223,30 @@ io.on('connection', (socket) => {
             io.to(sockets[data.id]).emit('private message', {
                 name: people[id].name,
                 message: data.message
+            });
+        });
+        
+        socket.on('privateRoom message', (data) => {
+            console.log(sockets)
+            console.log(data.name)
+            console.log(name)
+            // io.to(sockets[name]).emit('privateRoom message', `${name} 🗣 ${data}`);
+            io.to(sockets[data.name]).emit('privateRoom message', `${name} 🗣 ${data}`);
+            // io.to(sockets[data.id]).emit('privateRoom message', {
+            //     name: people[id].name,
+            //     message: data.message
+            // });
+        });
+
+        socket.on('room message', (data) => {
+            io.to(sockets[data]).emit('room message', {
+                name: people[id].name,
+            });
+        });
+
+        socket.on('confirm message', (data) => {
+            io.to(sockets[data.name]).emit('confirm message', {
+                name: people[id].name,
             });
         });
 

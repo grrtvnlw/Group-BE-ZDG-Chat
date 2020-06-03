@@ -75,6 +75,7 @@ $(document).ready(() => {
   $(document).on('click', '.name', function(e) {
       const id = $(this).data('id');
       $('.private-form').data('id', id);
+      $('.room-form').data('id', id);
   });
 
   $('.private-form').on('submit', function(e) {
@@ -84,10 +85,46 @@ $(document).ready(() => {
     $('.privatechat-input').val('');
     socket.emit('private message', { id, message })
   });
+
+  $('.room-form').on('submit', function(e) {
+    e.preventDefault();
+    const id = $(this).data('id');
+    socket.emit('room message', id);
+  });
   
   socket.on('private message', (data) => {
     alert(`${data.name} says ${data.message}`)
   })
+
+  socket.on('room message', (data) => {
+    if (window.confirm(`${data.name} wants you to join them in a private room! If you click "ok" you will be redirected. Click cancel to reject ${data.name}.`))
+    {
+      socket.emit('confirm message', data);
+      window.location.href='http://localhost:3000/private';
+    };
+  })
+  
+  socket.on('confirm message', (data) => {
+    if (window.confirm(`${data.name} agreed to the private session! Click "ok" to go meet them, or click cancel to break their heart.`))
+    {
+      socket.emit('privateRoom message', data);
+      window.location.href='http://localhost:3000/private';
+    };
+  })
+  
+  $('.privateRoom-form').on('submit', function(e) {
+    e.preventDefault();
+    const message = $('#privateRoom-message').val();
+    console.log(message)
+    $('#privateRoom-message').val('');
+    // socket.emit('privateRoom message', { id, message })
+    socket.emit('privateRoom message', message);
+  });
+
+  socket.on('privateRoom message', (message) => {
+    const $newChat = $(`<li class="list-group-item">${message}</li>`);
+    $('#privateRoom').append($newChat);
+  });
 
   socket.on('emitParticipants', (people) => {
     $('#online').html('');

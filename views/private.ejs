@@ -10,6 +10,7 @@
         <a class="dropdown-item" href="/atlantaroom">Atlanta Room</a></a>
         <a class="dropdown-item" href="/codingroom">Coding Room
         <a class="dropdown-item" href="/petroom">Pet Room</a>
+        <a class="dropdown-item" href="/mainroom">Home</a>
       </div>
     </div>
     <div>
@@ -20,35 +21,53 @@
     </div>
   </header>
   <section class="d-flex flex-direction-column border border-secondary rounded">
-    <div id="mainChat" class="">
+    <div id="mainChatpriv" class="">
       <div id="chatHeader" class="bg-color d-flex justify-content-start">
         <h2 class="ml-2">Welcome to Private Chat <span class="username"><%= name %></span></h2>
       </div>
       <div id="chatBody" class="overflow-auto">
-        <ul id="messages" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
+        <ul id="privateRoom" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
           <!-- Chat messages go here -->
         </ul>
       </div>
       <div id="chatInput">
         <div class="typing mb-3"></div>
-        <form class="chat-form d-flex">
-          <input class="form-control chat-input w-100" id="chat-message" />
+        <form class="privateRoom-form d-flex">
+          <input class="form-control chat-input w-100" id="privateRoom-message" />
           <button type="submit" class="btn btn-primary">
             Send
           </button>
         </form>
-      </div>
-
+      </div> 
     </div>
-    <div id="onlineUsers" class="border-left border-primary">
+    <!-- <div id="onlineUsers" class="border-left border-primary">
       <div id="onlineHeader" class="bg-color d-flex justify-content-center">
         <h2>Online</h2>
       </div>
       <div id="users">
         <ul id="online" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
-          <!-- Chat messages go here -->
         </ul>
       </div>  
+    </div> -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Send a private chat!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form class="private-form d-flex m-2" data-room="privatechat" >
+            <input class="form-control privatechat-input w-100" id="chat-message" />
+            <button type="submit" class="btn btn-primary">
+              Ping
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   </section>
   </div>

@@ -56,7 +56,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Send a private chat!</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Send a private chat or join a room!</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -64,9 +64,17 @@
           <form class="private-form d-flex m-2" data-room="privatechat" >
             <input class="form-control privatechat-input w-100" id="chat-message" />
             <button type="submit" class="btn btn-primary">
-              Send
+              Ping
             </button>
           </form>
+          <form class="room-form d-flex m-2">
+            <button type="submit" class="btn btn-primary">
+              Invite a Guest
+            </button>
+          </form>
+          <!-- <a href="http://localhost:3000/private"><button class="btn btn-primary">
+            Join Private Room
+          </button></a> -->
         </div>
       </div>
     </div>
