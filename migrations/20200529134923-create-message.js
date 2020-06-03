@@ -19,9 +19,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      SenderID: {
-        type: Sequelize.INTEGER
-      },
     });
   },
   down: (queryInterface, Sequelize) => {

@@ -28,7 +28,7 @@
       <div id="chatBody" class="overflow-auto">
         <ul id="privateRoom" class="list-group w-80 flex-grow-1 overflow-auto" style="list-style-type: none;">
           <% for(var i=0; i < messages.length; i++) { %>
-            <li class="list-group-item"><span class="dbusername"><%= messages[i].SenderID %></span>: <%= messages[i].content %>  <span class="number"><span>| <%= messages[i].formattedDate %></span></li>
+            <li class="list-group-item"><span class="dbusername"><%= senderName %></span>: <%= messages[i].content %>  <span class="number"><span>| <%= messages[i].formattedDate %></span></li>
           <% } %>
         </ul>
       </div>

@@ -159,10 +159,15 @@ app.get('/private', (req, res) => {
         ]
     })
     .then((results) => {
-        res.render('private', {
-            title: 'Private Chat',
-            messages: results,
-            name: username
+        db.User.findByPk(results[0].SenderID)
+        .then((user) => {
+            console.log(user.username)
+            res.render('private', {
+                title: 'Private Chat',
+                messages: results,
+                name: username,
+                senderName: user.username
+            })
         })
     })
 });
@@ -240,13 +245,15 @@ io.on('connection', (socket) => {
         
         socket.on('privateRoom message', (data) => {
             console.log(id)
+            console.log(data.id)
+            console.log(data.message)
             db.Message.create({
                 content: data.message,
                 RoomId: 4, 
                 UserId: data.id,
-                SenderID: id 
+                SenderID: id
             }).then((result) => {
-                io.to(sockets[data.id]).emit('privateRoom message', `${name} 🗣 ${data.message}`);
+                io.to(sockets[data.id]).emit('privateRoom message', `${people[id].name} 🗣 ${data.message}`);
             });
         });
 
