@@ -2,6 +2,8 @@
 
 ZDG-Chat is a messaging app with forum rooms, the main chat room, and private messaging capability.
 
+![Home Page](images/screenshot.png)
+
 ## Purpose
 This app is a group project from a DigitalCrafts Bootcamp cohort. The project was completed in 4 days by 3 student developers.
 
